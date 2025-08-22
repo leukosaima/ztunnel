@@ -73,6 +73,7 @@ jobs:
         cat <<'EOF' > Dockerfile
         FROM gcr.io/distroless/static-debian12
         COPY ztunnel /usr/local/bin/ztunnel
+        RUN chmod +x /usr/local/bin/ztunnel
         USER 65532:65532
         ENTRYPOINT ["/usr/local/bin/ztunnel"]
         EOF
