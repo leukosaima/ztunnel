@@ -1,0 +1,75 @@
+name: Build and Push FIPS ztunnel
+
+on:
+  workflow_dispatch:
+
+env:
+  TLS_MODE: boring
+  BORING_BSSL_FIPS_PATH: vendor/boringssl-fips/linux_x86_64
+  BORING_BSSL_FIPS_INCLUDE_PATH: vendor/boringssl-fips/include
+  ZTUNNEL_REPO: https://github.com/istio/ztunnel.git
+  ZTUNNEL_REF: 1.26.3
+  IMAGE_NAME: ghcr.io/leukosaima/ztunnel:1.26.3-fips
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Install build dependencies
+      run: sudo apt-get update && sudo apt-get install -y clang pkg-config libssl-dev git
+
+    - name: Clone ztunnel at ${{ env.ZTUNNEL_REF }}
+      run: |
+        git clone $ZTUNNEL_REPO
+        cd ztunnel
+        git checkout $ZTUNNEL_REF
+
+    - name: Set up Rust 1.85.0
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: 1.85.0
+        override: true
+
+    - name: Build ztunnel with FIPS TLS
+      working-directory: ./ztunnel
+      run: ./scripts/release.sh
+
+    - name: Upload ztunnel binary
+      uses: actions/upload-artifact@v4
+      with:
+        name: ztunnel
+        path: ztunnel/target/release/ztunnel
+
+  package:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Download ztunnel binary
+      uses: actions/download-artifact@v4
+      with:
+        name: ztunnel
+
+    - name: Create Dockerfile for runtime image
+      run: |
+        cat <<'EOF' > Dockerfile
+        FROM gcr.io/distroless/static-debian12
+        COPY ztunnel /usr/local/bin/ztunnel
+        USER 65532:65532
+        ENTRYPOINT ["/usr/local/bin/ztunnel"]
+        EOF
+
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Build and push image
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        push: true
+        tags: ${{ env.IMAGE_NAME }}
