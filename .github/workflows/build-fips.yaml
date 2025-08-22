@@ -38,8 +38,8 @@ jobs:
       working-directory: ./ztunnel
       run: |
         mkdir out_artifacts
-        export DEST=./out_artifacts
-        ./script/release.sh
+        export DEST=../out_artifacts
+        ./scripts/release.sh
         ls -alh ./out_artifacts
 
     - name: Upload ztunnel binary
