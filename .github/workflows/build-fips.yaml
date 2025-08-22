@@ -9,7 +9,7 @@ permissions:
   
 env:
   TLS_MODE: boring
-  BORING_BSSL_FIPS_PATH: vendor/boringssl-fips/linux_x86_64
+  BORING_BSSL_FIPS_PATH: vendor/boringssl-fips/linux_arm64
   BORING_BSSL_FIPS_INCLUDE_PATH: vendor/boringssl-fips/include
   ZTUNNEL_REPO: https://github.com/istio/ztunnel.git
   ZTUNNEL_REF: d4e543a299d5e1fb199449ed285758c090687452 # 1.26.3
