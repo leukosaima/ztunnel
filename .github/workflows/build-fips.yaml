@@ -71,10 +71,14 @@ jobs:
     - name: Create Dockerfile for runtime image
       run: |
         cat <<'EOF' > Dockerfile
+        FROM ubuntu:noble AS permission-fixer
+        COPY ztunnel /tmp/ztunnel
+        RUN chmod +x /tmp/ztunnel
+        
         FROM gcr.io/istio-release/iptables:master-2025-07-30T19-02-17
         WORKDIR /
         ARG istio_version=1.26.3-fips
-        COPY ztunnel /usr/local/bin/ztunnel
+        COPY --from=permission-fixer /tmp/ztunnel /usr/local/bin/ztunnel
         ENV ISTIO_META_ISTIO_VERSION=$istio_version
         ENV ZTUNNEL_FIPS_BUILD=true
         ENTRYPOINT ["/usr/local/bin/ztunnel"]
