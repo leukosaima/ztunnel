@@ -12,7 +12,7 @@ env:
   BORING_BSSL_FIPS_PATH: vendor/boringssl-fips/linux_x86_64
   BORING_BSSL_FIPS_INCLUDE_PATH: vendor/boringssl-fips/include
   ZTUNNEL_REPO: https://github.com/istio/ztunnel.git
-  ZTUNNEL_REF: 1.26.3
+  ZTUNNEL_REF: d4e543a299d5e1fb199449ed285758c090687452 # 1.26.3
   IMAGE_NAME: ghcr.io/leukosaima/ztunnel:1.26.3-fips
 
 jobs:
