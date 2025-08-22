@@ -2,7 +2,11 @@ name: Build and Push FIPS ztunnel
 
 on:
   workflow_dispatch:
-
+  
+permissions:
+  contents: read
+  packages: write
+  
 env:
   TLS_MODE: boring
   BORING_BSSL_FIPS_PATH: vendor/boringssl-fips/linux_x86_64
@@ -81,7 +85,7 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
         
     - name: Build and push image
-      uses: docker/build-push-action@v5
+      uses: docker/build-push-action@v6
       with:
         context: .
         push: true
