@@ -17,7 +17,10 @@ jobs:
 
     steps:
     - name: Install build dependencies
-      run: sudo apt-get update && sudo apt-get install -y clang pkg-config libssl-dev git
+      run: sudo apt-get update && sudo apt-get install -y clang pkg-config libssl-dev git protobuf-compiler
+
+    - name: Check protoc version
+      run: protoc --version
 
     - name: Clone ztunnel at ${{ env.ZTUNNEL_REF }}
       run: |
