@@ -13,11 +13,11 @@ env:
   BORING_BSSL_FIPS_INCLUDE_PATH: vendor/boringssl-fips/include
   ZTUNNEL_REPO: https://github.com/istio/ztunnel.git
   ZTUNNEL_REF: d4e543a299d5e1fb199449ed285758c090687452 # 1.26.3
-  IMAGE_NAME: ghcr.io/leukosaima/ztunnel:1.26.3-fips
+  IMAGE_NAME: ghcr.io/leukosaima/ztunnel:1.26.3-fips-arm
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
 
     steps:
     - name: Install build dependencies
@@ -59,7 +59,7 @@ jobs:
 
   package:
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
 
     steps:
     - name: Download ztunnel binary
