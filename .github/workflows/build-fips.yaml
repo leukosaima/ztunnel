@@ -38,7 +38,8 @@ jobs:
       working-directory: ./ztunnel
       run: |
         mkdir out_artifacts
-        export DEST=../out_artifacts
+        echo "Current directory: $(pwd)"
+        export DEST=$(pwd)/out_artifacts
         ./scripts/release.sh
         ls -alh ./out_artifacts
 
@@ -46,7 +47,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: ztunnel
-        path: ztunnel/target/release/ztunnel
+        path: ztunnel/out_artifacts/*
 
   package:
     needs: build
